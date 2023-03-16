@@ -48,17 +48,19 @@ def get_fruit_load_list():
 if streamlit.button('GET fruit load list table rows'):
   my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
   my_data_rows = get_fruit_load_list()
+  my_cnx.close()
   streamlit.dataframe(my_data_rows)
 
   
  #3
 def insert_row_snowflake(fruit):
   with my_cnx.cursor() as my_cur:
-    my_cur.execute("INSERT INTO fruit_load_list VALUES ('from streamlit')")
-    return 'Thanks for adding ', fruit
+    my_cur.execute("INSERT INTO fruit_load_list VALUES ('"+fruit+"')")
+    return "Thanks for adding "+ fruit
 
 fruit_choice = streamlit.text_input('What fruit would you like to add?')
 if streamlit.button('Add fruit to list'):
   my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
   result = insert_row_snowflake(fruit_choice)
+  my_cnx.close()
   streamlit.text(result)
